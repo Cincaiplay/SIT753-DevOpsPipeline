@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "chai": "^5.1.1",
+    "express": "^4.19.2",
+    "mocha": "^10.7.3",
+    "mongodb": "^6.8.0",
+    "request": "^2.88.2",
+    "socket.io": "^4.7.5"
+  },
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "devDependencies": {
+    "chai-http": "^5.0.0"
+  }
+}
