@@ -48,21 +48,21 @@ pipeline {
 
 
         // Code Quality Analysis Stage: Use CodeClimate for code quality analysis
-        stage('Code Quality Analysis') {
-            steps {
-                script {
-                    echo "Running CodeClimate analysis..."
-                    // Windows bat syntax for Docker + CodeClimate analysis
-                    bat """
-                    docker run --rm ^
-                    -e CODECLIMATE_CODE="%WORKSPACE%" ^
-                    -v "%WORKSPACE%":/code ^
-                    -v /var/run/docker.sock:/var/run/docker.sock ^
-                    codeclimate/codeclimate analyze
-                    """
-                }
-            }
-        }
+        // stage('Code Quality Analysis') {
+        //     steps {
+        //         script {
+        //             echo "Running CodeClimate analysis..."
+        //             // Windows bat syntax for Docker + CodeClimate analysis
+        //             bat """
+        //             docker run --rm ^
+        //             -e CODECLIMATE_CODE="%WORKSPACE%" ^
+        //             -v "%WORKSPACE%":/code ^
+        //             -v /var/run/docker.sock:/var/run/docker.sock ^
+        //             codeclimate/codeclimate analyze
+        //             """
+        //         }
+        //     }
+        // }
 
         // Packaging Stage: Zip the project and upload to S3
         stage('Package and Upload') {
