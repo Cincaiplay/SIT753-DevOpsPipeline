@@ -31,16 +31,19 @@ pipeline {
                 script {
                     echo "Running automated tests with Mocha inside Docker container..."
 
-                    // Start the server and run tests in the same container
+                    // Start the server in the background and run tests
                     bat '''
                     docker run --rm sit753-devopspipeline:latest /bin/bash -c "
                         npm start & 
+                        SERVER_PID=$! && 
                         sleep 10 && 
-                        npm test"
+                        npm test &&
+                        kill $SERVER_PID"
                     '''
                 }
             }
         }
+
 
 
 
