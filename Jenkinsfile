@@ -18,10 +18,6 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    echo "Removing any previous Docker image..."
-                    // Attempt to remove the previous image (if it exists) by ignoring errors if it's not found
-                    bat 'docker rmi %DOCKER_IMAGE_NAME%:latest || echo "No previous image found"'
-
                     echo "Building the Docker image..."
                     // Build the new Docker image
                     bat 'docker build --no-cache -t sit753-devopspipeline:latest .'
