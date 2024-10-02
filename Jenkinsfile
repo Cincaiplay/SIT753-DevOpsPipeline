@@ -34,8 +34,15 @@ pipeline {
             steps {
                 script {
                     echo "Running automated tests with Mocha inside Docker container..."
-                    // Use bat for Windows (assuming Node.js is set up properly in Docker)
-                    bat 'docker run --rm %DOCKER_IMAGE_NAME%:latest npm test'
+            
+                    // Start the server in the background
+                    bat 'docker run --rm -d -p 3040:3040 --name test-server sit753-devopspipeline:latest npm start'
+                    
+                    // Run the tests
+                    bat 'docker run --rm sit753-devopspipeline:latest npm test'
+                    
+                    // Stop the test server after running the tests
+                    bat 'docker stop test-server'
                 }
             }
         }
