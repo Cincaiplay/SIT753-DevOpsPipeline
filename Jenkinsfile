@@ -81,7 +81,8 @@ pipeline {
                 script {
                     echo "Packaging the application..."
                     // Use PowerShell to compress the application
-                    bat 'powershell -command "Compress-Archive -Path * -DestinationPath app.zip"'
+                    bat 'powershell -command "Compress-Archive -Path * -DestinationPath app.zip -Force"'
+
                     
                     echo "Uploading the package to S3..."
                     // Upload the ZIP file to S3 using AWS CLI
