@@ -30,26 +30,37 @@ pipeline {
             steps {
                 script {
                     echo "Running automated tests with Mocha inside Docker container..."
-                    
+
                     // Start the server in the background
                     bat 'docker run --rm -d -p 3040:3040 --name test-server sit753-devopspipeline:latest npm start'
-                    
-                    // Perform a health check to see if the server is up and running
-                    bat '''
-                        echo "Waiting for the server to start..."
-                        for i in {1..10}; do
-                            curl -s http://localhost:3040 && break || sleep 2
-                        done
+
+                    // Perform a health check using PowerShell
+                    powershell '''
+                        $maxRetries = 10
+                        $delaySeconds = 2
+                        for ($i = 0; $i -lt $maxRetries; $i++) {
+                            try {
+                                $response = Invoke-WebRequest -Uri http://localhost:3040 -UseBasicParsing
+                                if ($response.StatusCode -eq 200) {
+                                    Write-Host "Server is up and running."
+                                    break
+                                }
+                            } catch {
+                                Write-Host "Server is not ready, retrying in $delaySeconds seconds..."
+                            }
+                            Start-Sleep -Seconds $delaySeconds
+                        }
                     '''
-                    
+
                     // Run the tests
                     bat 'docker run --rm sit753-devopspipeline:latest npm test'
-                    
+
                     // Stop the test server after running the tests
                     bat 'docker stop test-server'
                 }
             }
         }
+
 
 
         // Code Quality Analysis Stage: Use CodeClimate for code quality analysis
