@@ -10,6 +10,9 @@ COPY package*.json ./
 # Install ALL dependencies (including devDependencies)
 RUN npm install --only=development
 
+# Install Mocha globally
+RUN npm install -g mocha
+
 # Copy the rest of the application files
 COPY . .
 
