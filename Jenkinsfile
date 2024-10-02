@@ -33,7 +33,7 @@ pipeline {
 
                     // Start the server in the background and run tests
                     bat '''
-                    docker run -d -p 3040:3040 --name test-server sit753-devopspipeline:latest npm start
+                    docker run --rm -d -p 3040:3040 --name test-server sit753-devopspipeline:latest npm start
                     sleep 10
                     docker exec test-server npm test
                     docker stop test-server
@@ -41,10 +41,6 @@ pipeline {
                 }
             }
         }
-
-
-
-
 
 
         // Code Quality Analysis Stage: Use CodeClimate for code quality analysis
@@ -64,20 +60,36 @@ pipeline {
         //     }
         // }
 
-        // Packaging Stage: Zip the project and upload to S3
+        // // Packaging Stage: Zip the project and upload to S3
+        // stage('Package and Upload') {
+        //     steps {
+        //         script {
+        //             echo "Packaging the application..."
+        //             // Windows command for zipping (PowerShell's Compress-Archive)
+        //             bat 'powershell -command "Compress-Archive -Path * -DestinationPath app.zip"'
+
+        //             echo "Uploading the package to S3..."
+        //             // AWS CLI for Windows to upload to S3
+        //             bat 'aws s3 cp app.zip s3://%S3_BUCKET%/app.zip --region %AWS_REGION%'
+        //         }
+        //     }
+        // }
+
+        // Package and Upload Stage
         stage('Package and Upload') {
             steps {
                 script {
                     echo "Packaging the application..."
-                    // Windows command for zipping (PowerShell's Compress-Archive)
+                    // Use PowerShell to compress the application
                     bat 'powershell -command "Compress-Archive -Path * -DestinationPath app.zip"'
-
+                    
                     echo "Uploading the package to S3..."
-                    // AWS CLI for Windows to upload to S3
-                    bat 'aws s3 cp app.zip s3://%S3_BUCKET%/app.zip --region %AWS_REGION%'
+                    // Upload the ZIP file to S3 using AWS CLI
+                    bat 'aws s3 cp app.zip s3://first-devops-bucket-cy/app.zip --region ap-southeast-2'
                 }
             }
         }
+
 
         // Deploy Stage: Deploy to a Docker container or test environment
         stage('Deploy to Test Environment') {
