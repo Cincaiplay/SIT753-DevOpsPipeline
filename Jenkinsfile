@@ -2,8 +2,15 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE_NAME = 'sit753-devopspipeline'  // 0ee07e8c6776e57c5ee7e1cddf598bd781ba4dced117c2ae9e2fbcf155a661e4
-        CC_TEST_REPORTER_ID = '0ee07e8c6776e57c5ee7e1cddf598bd781ba4dced117c2ae9e2fbcf155a661e4'  // Replace with your CodeClimate Test Reporter ID
+        DOCKER_IMAGE_NAME = 'sit753-devopspipeline'
+        CC_TEST_REPORTER_ID = '0ee07e8c6776e57c5ee7e1cddf598bd781ba4dced117c2ae9e2fbcf155a661e4'
+        S3_BUCKET = 'first-devops-bucket-cy'  // Replace with your S3 bucket name
+        AWS_APPLICATION_NAME = 'FirstCodeDeploy'  // AWS CodeDeploy app name
+        AWS_DEPLOYMENT_GROUP = 'FirstEc2InstanceCodeDeploy'  // AWS CodeDeploy deployment group
+        AWS_REGION = 'ap-southeast-2'  // Your AWS region
+        NEW_RELIC_API_KEY = credentials('new-relic-api-key')
+        NEW_RELIC_APP_ID = '597668452'
+        APP_URL = 'http://3.27.236.171:4000'  // Production URL (Added http for valid URL format)
     }
 
     stages {
@@ -46,6 +53,22 @@ pipeline {
             }
         }
 
+        // Additional: Packaging Stage: Zip the project and upload to S3
+        stage('Package and Upload') {
+            steps {
+                script {
+                    echo "Packaging the application..."
+                    // Zip the entire project folder
+                    sh 'zip -r app.zip *'
+                    echo "Uploading the package to S3..."
+                    // Upload the ZIP file to S3
+                    sh """
+                    aws s3 cp app.zip s3://${S3_BUCKET}/app.zip --region ${AWS_REGION}
+                    """
+                }
+            }
+        }
+
         // Deploy Stage: Deploy to a Docker container or test environment
         stage('Deploy to Test Environment') {
             steps {
@@ -59,26 +82,35 @@ pipeline {
             }
         }
 
-        // Additional Stage: 
+        // Additional Stage: Check if the deployment in test environment is successful
         stage('Integration Tests on Test Environment') {
             steps {
                 script {
+                    // Logging a message to indicate the start of the integration test stage
                     echo "Running integration tests on the test environment..."
-                    // Example test command, replace with your actual test suite
-                    sh 'npm run integration-test'  // Ensure you have an integration test script
+                    
+                    // This command runs the "integration-test" script defined in your package.json.
+                    // It will execute the tests against the deployed application running in the test environment.
+                    sh 'npm run integration-test'
                 }
             }
         }
 
+
         // Release Stage: Promote to production environment
-        stage('Deploy to Production Environment') {
+        stage('Release to Production with AWS CodeDeploy') {
             steps {
                 script {
-                    echo "Deploying Docker image to the production environment..."
-                    // Stop and remove any existing production container
-                    sh 'docker stop production-app || true && docker rm production-app || true'
-                    // Run the new Docker container as the production environment
-                    sh 'docker run -d -p 5000:3040 --name production-app ${DOCKER_IMAGE_NAME}:latest'
+                    echo "Deploying to production using AWS CodeDeploy..."
+
+                    // Assuming the build artifacts are already uploaded to S3
+                    sh """
+                    aws deploy create-deployment \
+                    --application-name ${AWS_APPLICATION_NAME} \
+                    --deployment-group-name ${AWS_DEPLOYMENT_GROUP} \
+                    --s3-location bucket=${S3_BUCKET},key=your-app-package.zip,bundleType=zip \
+                    --region ${AWS_REGION}
+                    """
                 }
             }
         }
@@ -87,9 +119,26 @@ pipeline {
         stage('Monitoring and Alerting') {
             steps {
                 script {
-                    echo "Setting up monitoring for the production environment..."
-                    // Use monitoring tools like Datadog or New Relic
-                    // Example: sh 'datadog-agent monitor ${DOCKER_IMAGE_NAME}'
+                    echo "Notifying New Relic about the deployment..."
+
+                    // Notify New Relic of the deployment
+                    newRelicDeployment(
+                        apiKey: "${NEW_RELIC_API_KEY}",
+                        applicationId: "${NEW_RELIC_APP_ID}",
+                        description: "Deployment to production complete. Monitoring application in New Relic.",
+                        user: "jenkins"
+                    )
+
+                    // Optionally, check the health of the production application
+                    sh """
+                    curl -s --connect-timeout 5 ${APP_URL} || newRelicNotify(
+                        apiKey: "${NEW_RELIC_API_KEY}",
+                        title: "Production App Down",
+                        text: "The production app is unreachable.",
+                        priority: 'high',
+                        alertType: 'error'
+                    )
+                    """
                 }
             }
         }

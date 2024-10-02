@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "chai": "^5.1.1",
+    "express": "^4.19.2",
+    "mocha": "^10.7.3",
+    "mongodb": "^6.8.0",
+    "newrelic": "^12.5.1",
+    "request": "^2.88.2",
+    "socket.io": "^4.7.5"
+  },
+  "scripts": {
+    "start": "node controllers/server_get.js",
+    "test": "mocha --reporter spec",
+    "integration-test": "mocha integration.test.js --reporter spec"
+  },
+  "devDependencies": {
+    "chai-http": "^5.0.0"
+  }
+}
