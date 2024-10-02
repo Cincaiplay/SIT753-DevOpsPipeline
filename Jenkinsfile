@@ -24,7 +24,7 @@ pipeline {
 
                     echo "Building the Docker image..."
                     // Build the new Docker image
-                    bat 'docker build -t %DOCKER_IMAGE_NAME%:latest .'
+                    bat 'docker build --no-cache -t sit753-devopspipeline:latest .'
                 }
             }
         }
@@ -35,7 +35,7 @@ pipeline {
                 script {
                     echo "Running automated tests with Mocha inside Docker container..."
                     // Use bat for Windows (assuming Node.js is set up properly in Docker)
-                    bat 'docker run --rm %DOCKER_IMAGE_NAME%:latest npm test'
+                    bat 'docker run --rm sit753-devopspipeline:latest ./node_modules/.bin/mocha --reporter spec'
                 }
             }
         }
