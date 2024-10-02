@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE_NAME = 'sit753-devopspipeline_Docker'
+        DOCKER_IMAGE_NAME = 'sit753-devopspipeline'
         CC_TEST_REPORTER_ID = '0ee07e8c6776e57c5ee7e1cddf598bd781ba4dced117c2ae9e2fbcf155a661e4'
         S3_BUCKET = 'your-s3-bucket-name'
         AWS_APPLICATION_NAME = 'FirstCodeDeploy'
