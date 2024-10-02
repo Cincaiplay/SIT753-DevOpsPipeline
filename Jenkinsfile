@@ -33,16 +33,15 @@ pipeline {
 
                     // Start the server in the background and run tests
                     bat '''
-                    docker run --rm sit753-devopspipeline:latest /bin/bash -c "
-                        npm start & 
-                        SERVER_PID=$! && 
-                        sleep 10 && 
-                        npm test &&
-                        kill $SERVER_PID"
+                    docker run -d -p 3040:3040 --name test-server sit753-devopspipeline:latest npm start
+                    sleep 10
+                    docker exec test-server npm test
+                    docker stop test-server
                     '''
                 }
             }
         }
+
 
 
 
