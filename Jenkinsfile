@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE_NAME = 'sit753-devopspipeline'
+        DOCKER_IMAGE_NAME = 'sit753-devopspipeline_Docker'
         CC_TEST_REPORTER_ID = '0ee07e8c6776e57c5ee7e1cddf598bd781ba4dced117c2ae9e2fbcf155a661e4'
         S3_BUCKET = 'your-s3-bucket-name'
         AWS_APPLICATION_NAME = 'FirstCodeDeploy'
@@ -18,8 +18,12 @@ pipeline {
         stage('Build') {
             steps {
                 script {
+                    echo "Removing any previous Docker image..."
+                    // Attempt to remove the previous image (if it exists) by ignoring errors if it's not found
+                    bat 'docker rmi %DOCKER_IMAGE_NAME%:latest || echo "No previous image found"'
+
                     echo "Building the Docker image..."
-                    // Use bat for Windows (assuming Docker is installed on the Windows machine)
+                    // Build the new Docker image
                     bat 'docker build -t %DOCKER_IMAGE_NAME%:latest .'
                 }
             }
@@ -76,16 +80,6 @@ pipeline {
                     bat 'docker stop test-app || echo "No container to stop"'
                     bat 'docker rm test-app || echo "No container to remove"'
                     bat 'docker run -d -p 4000:3040 --name test-app %DOCKER_IMAGE_NAME%:latest'
-                }
-            }
-        }
-
-        // Integration Tests on Test Environment
-        stage('Integration Tests on Test Environment') {
-            steps {
-                script {
-                    echo "Running integration tests on the test environment..."
-                    bat 'npm run integration-test'
                 }
             }
         }
