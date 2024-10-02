@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "express": "^4.19.2",
-    "mocha": "^10.7.3",
     "mongodb": "^6.8.0",
     "newrelic": "^12.5.1",
     "request": "^2.88.2",
@@ -15,6 +14,7 @@
   },
   "devDependencies": {
     "chai": "^4.5.0",
-    "chai-http": "^5.0.0"
+    "chai-http": "^5.0.0",
+    "mocha": "^10.7.3"
   }
 }
