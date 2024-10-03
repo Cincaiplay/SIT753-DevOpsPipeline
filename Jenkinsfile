@@ -77,32 +77,33 @@ pipeline {
 
 
         // Package and Upload Stage
-        stage('Package and Upload') {
-            steps {
-                script {
-                    echo "Packaging the application..."
-                    // Use PowerShell to compress the application
-                    bat 'powershell -command "Compress-Archive -Path * -DestinationPath app.zip -Force"'
+        // stage('Package and Upload') {
+        //     steps {
+        //         script {
+        //             echo "Packaging the application..."
+        //             // Use PowerShell to compress the application
+        //             bat 'powershell -command "Compress-Archive -Path * -DestinationPath app.zip -Force"'
 
                     
-                    echo "Uploading the package to S3..."
-                    // Upload the ZIP file to S3 using AWS CLI
-                    bat 'aws s3 cp app.zip s3://first-devops-bucket-cy/app.zip --region ap-southeast-2'
-                }
-            }
-        }
+        //             echo "Uploading the package to S3..."
+        //             // Upload the ZIP file to S3 using AWS CLI
+        //             bat 'aws s3 cp app.zip s3://first-devops-bucket-cy/app.zip --region ap-southeast-2'
+        //         }
+        //     }
+        // }
 
         // Deploy Stage: Deploy to a Docker container or test environment
-        stage('Deploy to Test Environment') {
-            steps {
-                script {
-                    echo "Deploying the Docker image to local test environment..."
-                    bat 'docker stop test-app || echo "No container to stop"'
-                    bat 'docker rm test-app || echo "No container to remove"'
-                    bat 'docker run -d -p 4000:3040 --name test-app %DOCKER_IMAGE_NAME%:latest'
-                }
-            }
-        }
+        // stage('Deploy to Test Environment') {
+        //     steps {
+        //         script {
+        //             echo "Deploying the Docker image to local test environment..."
+        //             sh 'docker stop test-app || echo "No container to stop"'
+        //             sh 'docker rm test-app || echo "No container to remove"'
+        //             sh 'docker run -d -p 4000:3040 --name test-app $DOCKER_IMAGE_NAME:latest'
+        //         }
+        //     }
+        // }
+
 
         // Release to Production with AWS CodeDeploy
         stage('Release to Production with AWS CodeDeploy') {
