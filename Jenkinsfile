@@ -110,17 +110,19 @@ pipeline {
             steps {
                 script {
                     echo "Deploying to production using AWS CodeDeploy..."
-                    // AWS CodeDeploy steps don't need modification as they apply to the Ubuntu instance
-                    sh """
-                    aws deploy create-deployment \
-                    --application-name ${AWS_APPLICATION_NAME} \
-                    --deployment-group-name ${AWS_DEPLOYMENT_GROUP} \
-                    --s3-location bucket=${S3_BUCKET},key=app.zip,bundleType=zip \
+
+                    // AWS CodeDeploy steps for Windows environment
+                    bat """
+                    aws deploy create-deployment ^
+                    --application-name ${AWS_APPLICATION_NAME} ^
+                    --deployment-group-name ${AWS_DEPLOYMENT_GROUP} ^
+                    --s3-location bucket=${S3_BUCKET},key=app.zip,bundleType=zip ^
                     --region ${AWS_REGION}
                     """
                 }
             }
         }
+
 
         // Monitoring and Alerting Stage
         stage('Monitoring and Alerting') {
