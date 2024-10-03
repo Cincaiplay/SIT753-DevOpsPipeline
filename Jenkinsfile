@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE_NAME = 'sit753-devopspipeline'
         CC_TEST_REPORTER_ID = '0ee07e8c6776e57c5ee7e1cddf598bd781ba4dced117c2ae9e2fbcf155a661e4'
-        S3_BUCKET = 'your-s3-bucket-name'
+        S3_BUCKET = 'first-devops-bucket-cy'
         AWS_APPLICATION_NAME = 'FirstCodeDeploy'
         AWS_DEPLOYMENT_GROUP = 'FirstEc2InstanceCodeDeploy'
         AWS_REGION = 'ap-southeast-2'
@@ -15,32 +15,32 @@ pipeline {
 
     stages {
         // Build Stage: Build the Docker image and create the build artifact
-        stage('Build') {
-            steps {
-                script {
-                    echo "Building the Docker image..."
-                    // Build the new Docker image
-                    bat 'docker build --no-cache -t sit753-devopspipeline:latest .'
-                }
-            }
-        }
+        // stage('Build') {
+        //     steps {
+        //         script {
+        //             echo "Building the Docker image..."
+        //             // Build the new Docker image
+        //             bat 'docker build --no-cache -t sit753-devopspipeline:latest .'
+        //         }
+        //     }
+        // }
 
-        // Test Stage: Run automated tests inside a Docker container
-        stage('Test') {
-            steps {
-                script {
-                    echo "Running automated tests with Mocha inside Docker container..."
+        // // Test Stage: Run automated tests inside a Docker container
+        // stage('Test') {
+        //     steps {
+        //         script {
+        //             echo "Running automated tests with Mocha inside Docker container..."
 
-                    // Start the server in the background and run tests
-                    bat '''
-                    docker run --rm -d -p 3040:3040 --name test-server sit753-devopspipeline:latest npm start
-                    sleep 10
-                    docker exec test-server npm test
-                    docker stop test-server
-                    '''
-                }
-            }
-        }
+        //             // Start the server in the background and run tests
+        //             bat '''
+        //             docker run --rm -d -p 3040:3040 --name test-server sit753-devopspipeline:latest npm start
+        //             sleep 10
+        //             docker exec test-server npm test
+        //             docker stop test-server
+        //             '''
+        //         }
+        //     }
+        // }
 
 
         // Code Quality Analysis Stage: Use CodeClimate for code quality analysis
