@@ -65,9 +65,9 @@ pipeline {
             steps {
                 script {
                     echo "Deploying the Docker image to local test environment..."
-                    sh 'docker stop test-app || echo "No container to stop"'
-                    sh 'docker rm test-app || echo "No container to remove"'
-                    sh 'docker run -d -p 4000:3040 --name test-app $DOCKER_IMAGE_NAME:latest'
+                    bat 'docker stop test-app || echo "No container to stop"'
+                    bat 'docker rm test-app || echo "No container to remove"'
+                    bat 'docker run -d -p 4000:3040 --name test-app $DOCKER_IMAGE_NAME:latest'
                 }
             }
         }
