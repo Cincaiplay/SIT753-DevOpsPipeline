@@ -1,8 +1,14 @@
 version: "2"
-engines:
-  rubocop:
-    enabled: true
+plugins:
   eslint:
+    enabled: true
+  structure:
     enabled: false
-exclude_paths:
+  duplication:
+    enabled: true
+
+exclude_patterns:
+  - "node_modules/"
+  - "dist/"
   - "test/"
+
