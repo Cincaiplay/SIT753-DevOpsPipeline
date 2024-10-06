@@ -25,22 +25,22 @@ pipeline {
             }
         } 
 
-        // // Test Stage: Run automated tests inside a Docker container
-        // stage('Test') {
-        //     steps {
-        //         script {
-        //             echo "Running automated tests with Mocha inside Docker container..."
+        // Test Stage: Run automated tests inside a Docker container
+        stage('Test') {
+            steps {
+                script {
+                    echo "Running automated tests with Mocha inside Docker container..."
 
-        //             // Start the server in the background and run tests
-        //             bat '''
-        //             docker run --rm -d -p 3040:3040 --name test-server sit753-devopspipeline:latest npm start
-        //             sleep 10
-        //             docker exec test-server npm test
-        //             docker stop test-server
-        //             '''
-        //         }
-        //     }
-        // }
+                    // Start the server in the background and run tests
+                    bat '''
+                    docker run --rm -d -p 3040:3040 --name test-server sit753-devopspipeline:latest npm start
+                    sleep 10
+                    docker exec test-server npm test
+                    docker stop test-server
+                    '''
+                }
+            }
+        }
 
 
         // Code Quality Analysis Stage: Use CodeClimate for code quality analysis
