@@ -23,7 +23,7 @@ pipeline {
                     bat 'docker build --no-cache -t sit753-devopspipeline:latest .'
                 }
             }
-        }
+        } 
 
         // // Test Stage: Run automated tests inside a Docker container
         // stage('Test') {
