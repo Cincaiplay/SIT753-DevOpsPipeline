@@ -43,22 +43,22 @@ pipeline {
         }
 
 
-        // Code Quality Analysis Stage: Use CodeClimate for code quality analysis
-        stage('Code Quality Analysis') {
-            steps {
-                script {
-                    echo "Running CodeClimate analysis..."
-                    // Convert Windows path to Docker-compatible path and avoid 'ro' flag for now
-                    bat """
-                    docker run --rm ^
-                    -e CODECLIMATE_CODE=%WORKSPACE% ^
-                    -v /c/ProgramData/Jenkins/.jenkins/workspace/SIT753_6.2HD_DevOpsPipeline:/code ^
-                    -v /var/run/docker.sock:/var/run/docker.sock ^
-                    codeclimate/codeclimate analyze
-                    """
-                }
-            }
-        }
+        // // Code Quality Analysis Stage: Use CodeClimate for code quality analysis
+        // stage('Code Quality Analysis') {
+        //     steps {
+        //         script {
+        //             echo "Running CodeClimate analysis..."
+        //             // Convert Windows path to Docker-compatible path and avoid 'ro' flag for now
+        //             bat """
+        //             docker run --rm ^
+        //             -e CODECLIMATE_CODE=%WORKSPACE% ^
+        //             -v /c/ProgramData/Jenkins/.jenkins/workspace/SIT753_6.2HD_DevOpsPipeline:/code ^
+        //             -v /var/run/docker.sock:/var/run/docker.sock ^
+        //             codeclimate/codeclimate analyze
+        //             """
+        //         }
+        //     }
+        // }
 
 
         // Deploy Stage: Deploy to a Docker container or test environment
@@ -75,27 +75,27 @@ pipeline {
             }
         }
 
-        // Release to Production with AWS CodeDeploy
-        stage('Release to Production with AWS CodeDeploy') {
-            steps {
-                script {
-                    // Fetch AWS credentials from Jenkins credentials store
-                    def awsCredentials = credentials('aws-credentials')
+        // // Release to Production with AWS CodeDeploy
+        // stage('Release to Production with AWS CodeDeploy') {
+        //     steps {
+        //         script {
+        //             // Fetch AWS credentials from Jenkins credentials store
+        //             def awsCredentials = credentials('aws-credentials')
 
-                    // Set the AWS credentials as environment variables
-                    withEnv(["AWS_ACCESS_KEY_ID=${awsCredentials.username}", "AWS_SECRET_ACCESS_KEY=${awsCredentials.password}"]) {
-                        echo "Deploying to production using AWS CodeDeploy..."
-                        bat '''
-                        aws deploy create-deployment ^
-                        --application-name FirstCodeDeploy ^
-                        --deployment-group-name FirstEc2InstanceCodeDeploy ^
-                        --s3-location bucket=first-devops-bucket-cy,key=app.zip,bundleType=zip ^
-                        --region ap-southeast-2
-                        '''
-                    }
-                }
-            }
-        }
+        //             // Set the AWS credentials as environment variables
+        //             withEnv(["AWS_ACCESS_KEY_ID=${awsCredentials.username}", "AWS_SECRET_ACCESS_KEY=${awsCredentials.password}"]) {
+        //                 echo "Deploying to production using AWS CodeDeploy..."
+        //                 bat '''
+        //                 aws deploy create-deployment ^
+        //                 --application-name FirstCodeDeploy ^
+        //                 --deployment-group-name FirstEc2InstanceCodeDeploy ^
+        //                 --s3-location bucket=first-devops-bucket-cy,key=app.zip,bundleType=zip ^
+        //                 --region ap-southeast-2
+        //                 '''
+        //             }
+        //         }
+        //     }
+        // }
 
 
 
