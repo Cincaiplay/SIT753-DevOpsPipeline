@@ -83,21 +83,24 @@ pipeline {
 
         // Release to Production with AWS CodeDeploy
         stage('Release to Production with AWS CodeDeploy') {
+            environment {
+                AWS_ACCESS_KEY_ID = credentials('aws-credentials').username
+                AWS_SECRET_ACCESS_KEY = credentials('aws-credentials').password
+            }
             steps {
                 script {
                     echo "Deploying to production using AWS CodeDeploy..."
-
-                    // AWS CodeDeploy steps for Windows environment
-                    bat """
+                    bat '''
                     aws deploy create-deployment ^
-                    --application-name ${AWS_APPLICATION_NAME} ^
-                    --deployment-group-name ${AWS_DEPLOYMENT_GROUP} ^
-                    --s3-location bucket=${S3_BUCKET},key=app.zip,bundleType=zip ^
-                    --region ${AWS_REGION}
-                    """
+                    --application-name FirstCodeDeploy ^
+                    --deployment-group-name FirstEc2InstanceCodeDeploy ^
+                    --s3-location bucket=first-devops-bucket-cy,key=app.zip,bundleType=zip ^
+                    --region ap-southeast-2
+                    '''
                 }
             }
         }
+
 
 
         // Monitoring and Alerting Stage
