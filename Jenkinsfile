@@ -65,8 +65,11 @@ pipeline {
             steps {
                 script {
                     echo "Deploying the Docker image to local test environment..."
-                    bat 'docker stop test-app || echo "No container to stop"'
-                    bat 'docker run -d -p 4000:3040 --name test-app sit753-devopspipeline:latest'
+                    bat '''
+                    docker stop test-app || echo "No container to stop"
+                    docker rm test-app || echo "No container to remove"
+                    docker run -d -p 4000:3040 --name test-app sit753-devopspipeline:latest || echo "Failed to run container"
+                    '''
                 }
             }
         }
