@@ -14,7 +14,7 @@ pipeline {
     }
 
     stages {
-        Build Stage: Build the Docker image and create the build artifact
+        // Build Stage: Build the Docker image and create the build artifact
         stage('Build') {
             steps {
                 script {
@@ -60,7 +60,7 @@ pipeline {
         //     }
         // }
 
-        Deploy Stage: Deploy to a Docker container or test environment
+        // Deploy Stage: Deploy to a Docker container or test environment
         stage('Deploy to Test Environment') {
             steps {
                 script {
