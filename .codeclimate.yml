@@ -1,0 +1,8 @@
+version: "2"
+engines:
+  rubocop:
+    enabled: true
+  eslint:
+    enabled: false
+exclude_paths:
+  - "test/"

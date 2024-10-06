@@ -44,21 +44,22 @@ pipeline {
 
 
         // Code Quality Analysis Stage: Use CodeClimate for code quality analysis
-        // stage('Code Quality Analysis') {
-        //     steps {
-        //         script {
-        //             echo "Running CodeClimate analysis..."
-        //             // Windows bat syntax for Docker + CodeClimate analysis
-        //             bat """
-        //             docker run --rm ^
-        //             -e CODECLIMATE_CODE="%WORKSPACE%" ^
-        //             -v "%WORKSPACE%":/code ^
-        //             -v /var/run/docker.sock:/var/run/docker.sock ^
-        //             codeclimate/codeclimate analyze
-        //             """
-        //         }
-        //     }
-        // }
+        stage('Code Quality Analysis') {
+            steps {
+                script {
+                    echo "Running CodeClimate analysis..."
+                    // Windows bat syntax for Docker + CodeClimate analysis
+                    bat """
+                    docker run --rm ^
+                    -e CODECLIMATE_CODE="%WORKSPACE%" ^
+                    -v "%WORKSPACE%":/code:ro ^   // Mount as read-only to improve performance
+                    -v /var/run/docker.sock:/var/run/docker.sock ^
+                    codeclimate/codeclimate analyze
+                    """
+
+                }
+            }
+        }
 
         // Deploy Stage: Deploy to a Docker container or test environment
         stage('Deploy to Test Environment') {
@@ -73,16 +74,6 @@ pipeline {
                 }
             }
         }
-
-        
-        // stage('Verify AWS CLI') {
-        //     steps {
-        //         script {
-        //             bat 'aws --version'
-        //         }
-        //     }
-        // }
-
 
         // Release to Production with AWS CodeDeploy
         stage('Release to Production with AWS CodeDeploy') {
@@ -109,23 +100,23 @@ pipeline {
 
 
 
-        // Monitoring and Alerting Stage
-        stage('Monitoring and Alerting') {
-            steps {
-                script {
-                    echo "Notifying New Relic about the deployment..."
-                    newRelicDeployment(
-                        apiKey: "${NEW_RELIC_API_KEY}",
-                        applicationId: "${NEW_RELIC_APP_ID}",
-                        description: "Deployment to production complete. Monitoring application in New Relic.",
-                        user: "jenkins"
-                    )
+        // // Monitoring and Alerting Stage
+        // stage('Monitoring and Alerting') {
+        //     steps {
+        //         script {
+        //             echo "Notifying New Relic about the deployment..."
+        //             newRelicDeployment(
+        //                 apiKey: "${NEW_RELIC_API_KEY}",
+        //                 applicationId: "${NEW_RELIC_APP_ID}",
+        //                 description: "Deployment to production complete. Monitoring application in New Relic.",
+        //                 user: "jenkins"
+        //             )
 
-                    bat """
-                    curl -s --connect-timeout 5 ${APP_URL} || echo 'App is down, sending alert to New Relic'
-                    """
-                }
-            }
-        }
+        //             bat """
+        //             curl -s --connect-timeout 5 ${APP_URL} || echo 'App is down, sending alert to New Relic'
+        //             """
+        //         }
+        //     }
+        // }
     }
 }
