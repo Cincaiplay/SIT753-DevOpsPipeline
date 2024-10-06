@@ -20,7 +20,7 @@ pipeline {
                 script {
                     echo "Building the Docker image..."
                     // Build the new Docker image
-                    bat 'docker build --no-cache -t sit753-devopspipeline:latest .'
+                    bat 'docker build --no-cache -t $DOCKER_IMAGE_NAME:latest .'
                 }
             }
         } 
@@ -65,8 +65,6 @@ pipeline {
             steps {
                 script {
                     echo "Deploying the Docker image to local test environment..."
-                    sh 'docker stop test-app || echo "No container to stop"'
-                    sh 'docker rm test-app || echo "No container to remove"'
                     sh 'docker run -d -p 4000:3040 --name test-app $DOCKER_IMAGE_NAME:latest'
                 }
             }
