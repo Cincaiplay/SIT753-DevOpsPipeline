@@ -31,16 +31,27 @@ pipeline {
                 script {
                     echo "Running automated tests with Mocha inside Docker container..."
 
-                    // Start the server in the background and run tests
+                    // Step 1: Start the server in the background
                     bat '''
                     docker run --rm -d -p 3040:3040 --name test-server sit753-devopspipeline:latest npm start
-                    timeout /t 20 /nobreak
+                    '''
+
+                    // Step 2: Use Jenkins' built-in sleep to wait for the server to start
+                    sleep(time: 5, unit: 'SECONDS')  // Sleep for 20 seconds to allow the server to fully start
+
+                    // Step 3: Run the tests
+                    bat '''
                     docker exec test-server npm test
+                    '''
+
+                    // Step 4: Stop the server after tests
+                    bat '''
                     docker stop test-server
                     '''
                 }
             }
         }
+
 
 
         // // Code Quality Analysis Stage: Use CodeClimate for code quality analysis
