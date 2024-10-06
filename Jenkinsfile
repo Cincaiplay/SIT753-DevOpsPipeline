@@ -83,23 +83,26 @@ pipeline {
 
         // Release to Production with AWS CodeDeploy
         stage('Release to Production with AWS CodeDeploy') {
-            environment {
-                AWS_ACCESS_KEY_ID = credentials('aws-credentials').username
-                AWS_SECRET_ACCESS_KEY = credentials('aws-credentials').password
-            }
             steps {
                 script {
-                    echo "Deploying to production using AWS CodeDeploy..."
-                    bat '''
-                    aws deploy create-deployment ^
-                    --application-name FirstCodeDeploy ^
-                    --deployment-group-name FirstEc2InstanceCodeDeploy ^
-                    --s3-location bucket=first-devops-bucket-cy,key=app.zip,bundleType=zip ^
-                    --region ap-southeast-2
-                    '''
+                    // Fetch AWS credentials from Jenkins credentials store
+                    def awsCredentials = credentials('aws-credentials')
+
+                    // Set the AWS credentials as environment variables
+                    withEnv(["AWS_ACCESS_KEY_ID=${awsCredentials.username}", "AWS_SECRET_ACCESS_KEY=${awsCredentials.password}"]) {
+                        echo "Deploying to production using AWS CodeDeploy..."
+                        bat '''
+                        aws deploy create-deployment ^
+                        --application-name FirstCodeDeploy ^
+                        --deployment-group-name FirstEc2InstanceCodeDeploy ^
+                        --s3-location bucket=first-devops-bucket-cy,key=app.zip,bundleType=zip ^
+                        --region ap-southeast-2
+                        '''
+                    }
                 }
             }
         }
+
 
 
 
