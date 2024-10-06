@@ -48,17 +48,18 @@ pipeline {
             steps {
                 script {
                     echo "Running CodeClimate analysis..."
-                    // Use a single line bat command with proper quoting for Windows paths
+                    // Convert Windows path to Docker-compatible path and avoid 'ro' flag for now
                     bat """
                     docker run --rm ^
-                    -e CODECLIMATE_CODE=\\"%WORKSPACE%\\" ^
-                    -v \\"%WORKSPACE%\\":/code:ro ^  // Mount as read-only to improve performance
+                    -e CODECLIMATE_CODE=%WORKSPACE% ^
+                    -v /c/ProgramData/Jenkins/.jenkins/workspace/SIT753_6.2HD_DevOpsPipeline:/code ^
                     -v /var/run/docker.sock:/var/run/docker.sock ^
                     codeclimate/codeclimate analyze
                     """
                 }
             }
         }
+
 
 
         // Deploy Stage: Deploy to a Docker container or test environment
