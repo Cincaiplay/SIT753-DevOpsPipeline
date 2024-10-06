@@ -48,18 +48,18 @@ pipeline {
             steps {
                 script {
                     echo "Running CodeClimate analysis..."
-                    // Windows bat syntax for Docker + CodeClimate analysis
+                    // Use a single line bat command with proper quoting for Windows paths
                     bat """
                     docker run --rm ^
-                    -e CODECLIMATE_CODE="%WORKSPACE%" ^
-                    -v "%WORKSPACE%":/code:ro ^   // Mount as read-only to improve performance
+                    -e CODECLIMATE_CODE=\\"%WORKSPACE%\\" ^
+                    -v \\"%WORKSPACE%\\":/code:ro ^  // Mount as read-only to improve performance
                     -v /var/run/docker.sock:/var/run/docker.sock ^
                     codeclimate/codeclimate analyze
                     """
-
                 }
             }
         }
+
 
         // Deploy Stage: Deploy to a Docker container or test environment
         stage('Deploy to Test Environment') {
