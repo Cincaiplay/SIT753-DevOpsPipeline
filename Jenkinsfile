@@ -14,16 +14,16 @@ pipeline {
     }
 
     stages {
-        // Build Stage: Build the Docker image and create the build artifact
-        // stage('Build') {
-        //     steps {
-        //         script {
-        //             echo "Building the Docker image..."
-        //             // Build the new Docker image
-        //             bat 'docker build --no-cache -t sit753-devopspipeline:latest .'
-        //         }
-        //     }
-        // }
+        Build Stage: Build the Docker image and create the build artifact
+        stage('Build') {
+            steps {
+                script {
+                    echo "Building the Docker image..."
+                    // Build the new Docker image
+                    bat 'docker build --no-cache -t sit753-devopspipeline:latest .'
+                }
+            }
+        }
 
         // // Test Stage: Run automated tests inside a Docker container
         // stage('Test') {
@@ -60,49 +60,25 @@ pipeline {
         //     }
         // }
 
-        // // Packaging Stage: Zip the project and upload to S3
-        // stage('Package and Upload') {
-        //     steps {
-        //         script {
-        //             echo "Packaging the application..."
-        //             // Windows command for zipping (PowerShell's Compress-Archive)
-        //             bat 'powershell -command "Compress-Archive -Path * -DestinationPath app.zip"'
-
-        //             echo "Uploading the package to S3..."
-        //             // AWS CLI for Windows to upload to S3
-        //             bat 'aws s3 cp app.zip s3://%S3_BUCKET%/app.zip --region %AWS_REGION%'
-        //         }
-        //     }
-        // }
-
-
-        // Package and Upload Stage
-        // stage('Package and Upload') {
-        //     steps {
-        //         script {
-        //             echo "Packaging the application..."
-        //             // Use PowerShell to compress the application
-        //             bat 'powershell -command "Compress-Archive -Path * -DestinationPath app.zip -Force"'
-
-                    
-        //             echo "Uploading the package to S3..."
-        //             // Upload the ZIP file to S3 using AWS CLI
-        //             bat 'aws s3 cp app.zip s3://first-devops-bucket-cy/app.zip --region ap-southeast-2'
-        //         }
-        //     }
-        // }
-
-        // Deploy Stage: Deploy to a Docker container or test environment
-        // stage('Deploy to Test Environment') {
-        //     steps {
-        //         script {
-        //             echo "Deploying the Docker image to local test environment..."
-        //             sh 'docker stop test-app || echo "No container to stop"'
-        //             sh 'docker rm test-app || echo "No container to remove"'
-        //             sh 'docker run -d -p 4000:3040 --name test-app $DOCKER_IMAGE_NAME:latest'
-        //         }
-        //     }
-        // }
+        Deploy Stage: Deploy to a Docker container or test environment
+        stage('Deploy to Test Environment') {
+            steps {
+                script {
+                    echo "Deploying the Docker image to local test environment..."
+                    sh 'docker stop test-app || echo "No container to stop"'
+                    sh 'docker rm test-app || echo "No container to remove"'
+                    sh 'docker run -d -p 4000:3040 --name test-app $DOCKER_IMAGE_NAME:latest'
+                }
+            }
+        }
+        
+        stage('Verify AWS CLI') {
+            steps {
+                script {
+                    bat 'aws --version'
+                }
+            }
+        }
 
 
         // Release to Production with AWS CodeDeploy
