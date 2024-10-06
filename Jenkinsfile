@@ -72,13 +72,13 @@ pipeline {
             }
         }
         
-        stage('Verify AWS CLI') {
-            steps {
-                script {
-                    bat 'aws --version'
-                }
-            }
-        }
+        // stage('Verify AWS CLI') {
+        //     steps {
+        //         script {
+        //             bat 'aws --version'
+        //         }
+        //     }
+        // }
 
 
         // Release to Production with AWS CodeDeploy
