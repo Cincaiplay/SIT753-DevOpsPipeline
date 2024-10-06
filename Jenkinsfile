@@ -65,10 +65,12 @@ pipeline {
             steps {
                 script {
                     echo "Deploying the Docker image to local test environment..."
-                    sh 'docker run -d -p 4000:3040 --name test-app sit753-devopspipeline:latest'
+                    // Use bat for Windows to run Docker commands
+                    bat 'docker run -d -p 4000:3040 --name test-app sit753-devopspipeline:latest'
                 }
             }
         }
+
         
         // stage('Verify AWS CLI') {
         //     steps {
