@@ -23,7 +23,7 @@ pipeline {
                     bat 'docker build --no-cache -t $DOCKER_IMAGE_NAME:latest .'
                 }
             }
-        } 
+        }  
 
         // // Test Stage: Run automated tests inside a Docker container
         // stage('Test') {
@@ -70,13 +70,13 @@ pipeline {
             }
         }
         
-        // stage('Verify AWS CLI') {
-        //     steps {
-        //         script {
-        //             bat 'aws --version'
-        //         }
-        //     }
-        // }
+        stage('Verify AWS CLI') {
+            steps {
+                script {
+                    bat 'aws --version'
+                }
+            }
+        }
 
 
         // Release to Production with AWS CodeDeploy
