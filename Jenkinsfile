@@ -80,7 +80,7 @@ pipeline {
                     bat '''
                     docker stop test-app || echo "No container to stop"
                     docker rm test-app || echo "No container to remove"
-                    docker run -d -p 4000:3040 --name test-app sit753-devopspipeline:latest || echo "Failed to run container"
+                    docker run --rm -d -p 4000:3040 --name test-app sit753-devopspipeline:latest || echo "Failed to run container"
                     '''
                 }
             }
