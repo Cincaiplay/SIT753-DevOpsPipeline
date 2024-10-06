@@ -20,10 +20,10 @@ pipeline {
                 script {
                     echo "Building the Docker image..."
                     // Build the new Docker image
-                    bat 'docker build --no-cache -t $DOCKER_IMAGE_NAME:latest .'
+                    bat 'docker build --no-cache -t sit753-devopspipeline:latest .'
                 }
             }
-        }  
+        } 
 
         // // Test Stage: Run automated tests inside a Docker container
         // stage('Test') {
@@ -65,18 +65,18 @@ pipeline {
             steps {
                 script {
                     echo "Deploying the Docker image to local test environment..."
-                    sh 'docker run -d -p 4000:3040 --name test-app $DOCKER_IMAGE_NAME:latest'
+                    sh 'docker run -d -p 4000:3040 --name test-app sit753-devopspipeline:latest'
                 }
             }
         }
         
-        stage('Verify AWS CLI') {
-            steps {
-                script {
-                    bat 'aws --version'
-                }
-            }
-        }
+        // stage('Verify AWS CLI') {
+        //     steps {
+        //         script {
+        //             bat 'aws --version'
+        //         }
+        //     }
+        // }
 
 
         // Release to Production with AWS CodeDeploy
